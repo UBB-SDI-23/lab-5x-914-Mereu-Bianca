@@ -18,11 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView,SpectacularSwaggerView
 # from rest_framework_swagger.views import get_swagger_view
+from django.views.generic import RedirectView
+# from django.conf.urls import url
 
 # schema_view = get_swagger_view(title='Pastebin API')
 
 
 urlpatterns = [
+    path('^favicon\.ico$',RedirectView.as_view(url='/static/images/favicon.ico')),
     path('admin/', admin.site.urls),
     path('api/', include('employee_register.urls')),
     path('', include('employee_register.urls')),

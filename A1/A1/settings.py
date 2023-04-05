@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'employee_register',
-    'rest_framework_swagger',
     'drf_spectacular',
     'drf_spectacular_sidecar'
 ]

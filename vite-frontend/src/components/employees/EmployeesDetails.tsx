@@ -39,7 +39,7 @@ export const EmployeeDetails = () => {
 					<h1>Employee Details</h1>
 					<p>Employee First Name: {employee?.first_name}</p>
 					<p>Employee Last Name: {employee?.last_name}</p>
-					<p>Employment Start Date: {employee?.employment_start_date.toString()}</p>
+					{/* <p>Employment Start Date: {employee?.employment_start_date.toString()}</p> */}
 					<p>Employee Salary: {employee?.salary}</p>
 					<p>Employee Salary: {employee?.status}</p>
 					<p>Department: {employee?.department?.name}</p>

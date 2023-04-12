@@ -1,4 +1,4 @@
-import { Card, CardActions, CardContent, IconButton } from "@mui/material";
+import { Card, CardActions, CardContent, IconButton, Toolbar } from "@mui/material";
 import { Container } from "@mui/system";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -24,23 +24,31 @@ export const EmployeeDetails = () => {
 		fetchEmployee();
 	}, [employeeId]);
 
+
+	console.log(employee?.department);
+
 	return (
 		<Container>
 			<Card>
 				<CardContent>
-					<IconButton component={Link} sx={{ mr: 3 }} to={`/employees`}>
-						<ArrowBackIcon />
-					</IconButton>{" "}
+					<Toolbar>
+						<IconButton component={Link} sx={{ mr: 3 }} to={`/employees`}>
+							<ArrowBackIcon />
+						</IconButton>{" "}
+					</Toolbar>
 					<h1>Employee Details</h1>
 					<p>Employee First Name: {employee?.first_name}</p>
 					<p>Employee Last Name: {employee?.last_name}</p>
-					{/* <p>Course Teacher Name: {employee?.teacher?.name}</p>
-					<p>Course students:</p>
+					<p>Employment Start Date: {employee?.employment_start_date.toString()}</p>
+					<p>Employee Salary: {employee?.salary}</p>
+					<p>Employee Salary: {employee?.status}</p>
+					<p>Department: {employee?.department?.name}</p>
+					<p>Projects:</p>
 					<ul>
-						{course?.students?.map((student) => (
-							<li key={student.id}>{student.name}</li>
+						{employee?.projects?.map((project) => (
+							<li>{project.name}</li>
 						))}
-					</ul> */}
+					</ul>
 				</CardContent>
 				<CardActions>
 					<IconButton component={Link} sx={{ mr: 3 }} to={`/employees/${employeeId}/edit`}>

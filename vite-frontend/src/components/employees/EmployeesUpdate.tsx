@@ -1,5 +1,5 @@
-import { Button, Card, CardActions, CardContent, Container, FormLabel, IconButton, TextField, colors } from "@mui/material";
-import axios from "axios";
+import { Button, Card, CardActions, CardContent, Container, FormLabel, IconButton, TextField, Toolbar, colors } from "@mui/material";
+import axios, { toFormData } from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { BACKEND_API_URL } from "../../constants";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -15,6 +15,9 @@ export const UpdateEmployee = () => {
         id: parseInt(String(employeeId)),
         first_name: "",
         last_name: "",
+        employment_start_date: new Date("2023-04-06T12:00:00Z"),
+        salary: 0,
+        status: "",
     });
 
     const updateEmployee = async (event: { preventDefault: () => void }) => {
@@ -36,9 +39,11 @@ export const UpdateEmployee = () => {
         <Container>
             <Card>
                 <CardContent>
-                    <IconButton component={Link} sx={{ mr: 3 }} to={`/employees`}>
-                        <ArrowBackIcon />
-                    </IconButton>{" "}
+                    <Toolbar>
+                        <IconButton component={Link} sx={{ mr: 3 }} to={`/employees`}>
+                            <ArrowBackIcon />
+                        </IconButton>{" "}
+                    </Toolbar>
                     <form onSubmit={updateEmployee} style={{ display: "flex", flexDirection: "column", padding: "8px" }}>
                         <Container sx={{ padding: "3px" }} style={{ display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
                             <FormLabel style={{ marginTop: "15px", fontSize: "18px" }}>
@@ -46,6 +51,7 @@ export const UpdateEmployee = () => {
                             </FormLabel>
                             <TextField
                                 id="first_name"
+                                // label="First Name"
                                 variant="outlined"
                                 onChange={(event) => setEmployee({ ...employee, first_name: event.target.value })}
                             />
@@ -60,6 +66,39 @@ export const UpdateEmployee = () => {
                                 variant="outlined"
                                 // generate the same code for onChange, but can you convert the string to int?
                                 onChange={(event) => setEmployee({ ...employee, last_name: event.target.value })}
+                            />
+                        </Container>
+
+                        <Container sx={{ padding: "3px" }} style={{ display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
+                            <FormLabel style={{ marginTop: "15px", fontSize: "18px" }}>
+                                Employment start date
+                            </FormLabel>
+                            <TextField
+                                id="employment_start_date"
+                                variant="outlined"
+                                onChange={(event) => setEmployee({ ...employee, employment_start_date: new Date(event.target.value) })}
+                            />
+                        </Container>
+
+                        <Container sx={{ padding: "3px" }} style={{ display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
+                            <FormLabel style={{ marginTop: "15px", fontSize: "18px" }}>
+                                Salary
+                            </FormLabel>
+                            <TextField
+                                id="salary"
+                                variant="outlined"
+                                onChange={(event) => setEmployee({ ...employee, salary: parseInt(event.target.value) })}
+                            />
+                        </Container>
+
+                        <Container sx={{ padding: "3px" }} style={{ display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
+                            <FormLabel style={{ marginTop: "15px", fontSize: "18px" }}>
+                                Status
+                            </FormLabel>
+                            <TextField
+                                id="status"
+                                variant="outlined"
+                                onChange={(event) => setEmployee({ ...employee, status: event.target.value })}
                             />
                         </Container>
 

@@ -27,6 +27,7 @@ urlpatterns = [
     path("employees-ordered-by-hours-worked/", EmployeesByMaxHoursWorked.as_view(),
          name="employees-ordered-by-hours-worked"),
     path("employees-ordered-by-avg-percent-complete/", EmployeesByAvgPercentComplete.as_view()),
+    path("departments/autocomplete/", DepartmentsForAutocomplete.as_view()),
     path('', include(router.urls)),
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

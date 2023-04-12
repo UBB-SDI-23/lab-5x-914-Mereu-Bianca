@@ -177,3 +177,15 @@ class EmployeesByAvgPercentComplete(generics.ListCreateAPIView):
         queryset = Employee.objects.annotate(sum_project_complete=Sum('employeeproject__project__percent_complete')).order_by(
             'sum_project_complete')
         return queryset
+
+class DepartmentsForAutocomplete(APIView):
+    serializer_class = DepartmentSerializerWithoutEmployee
+
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get('query')
+        # TODO: leverage full text search (using a raw query if needed)
+        # for example in postgres:
+        # SELECT * FROM teacher WHERE to_tsvector(name) @@ to_tsquery(query)
+        departments = Department.objects.filter(name__icontains=query).order_by('name')[:20]
+        serializer = DepartmentSerializerWithoutEmployee(departments, many=True)
+        return Response(serializer.data)

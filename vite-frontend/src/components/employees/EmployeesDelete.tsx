@@ -1,4 +1,4 @@
-import { Container, Card, CardContent, IconButton, CardActions, Button } from "@mui/material";
+import { Container, Card, CardContent, IconButton, CardActions, Button, Toolbar } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import axios from "axios";
@@ -25,9 +25,11 @@ export const EmployeeDelete = () => {
 		<Container>
 			<Card>
 				<CardContent>
-					<IconButton component={Link} sx={{ mr: 3 }} to={`/employees`}>
-						<ArrowBackIcon />
-					</IconButton>{" "}
+					<Toolbar>
+						<IconButton component={Link} sx={{ mr: 3 }} to={`/employees`}>
+							<ArrowBackIcon />
+						</IconButton>{" "}
+					</Toolbar>
 					Are you sure you want to delete this employee? This cannot be undone!
 				</CardContent>
 				<CardActions>

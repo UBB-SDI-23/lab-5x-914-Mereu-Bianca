@@ -17,6 +17,9 @@ class Department(models.Model):
 class Employee(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+    employment_start_date = models.DateTimeField(null=True)
+    salary = models.IntegerField(null=True)
+    status = models.CharField(max_length=100, null=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, related_name='employees')
     projects = models.ManyToManyField('Project', through='EmployeeProject')
 

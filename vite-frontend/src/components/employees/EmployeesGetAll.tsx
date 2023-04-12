@@ -10,6 +10,8 @@ import {
 	Container,
 	IconButton,
 	Tooltip,
+	Button,
+	Toolbar,
 } from "@mui/material";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -35,6 +37,15 @@ export const AllEmployees = () => {
 			});
 	}, []);
 
+	const orderBySalary = () => {
+		const sorted = [...employees].sort((a, b) => {
+			const salary1 = a.salary;
+			const salary2 = b.salary;
+			return salary1 - salary2;
+		});
+		setEmployees(sorted);
+	}
+
 	return (
 		<Container>
 			<h1>All employees</h1>
@@ -42,11 +53,17 @@ export const AllEmployees = () => {
 			{loading && <CircularProgress />}
 			{!loading && employees.length === 0 && <p>No Employees found</p>}
 			{!loading && (
-				<IconButton component={Link} sx={{ mr: 3 }} to={`/employees/add`}>
-					<Tooltip title="Add a new employee" arrow>
-						<AddIcon color="primary" />
-					</Tooltip>
-				</IconButton>
+				<Toolbar>
+					<IconButton component={Link} sx={{ mr: 3 }} to={`/employees/add`}>
+						<Tooltip title="Add a new employee" arrow>
+							<AddIcon color="primary" />
+						</Tooltip>
+					</IconButton>
+					<Button
+						onClick={orderBySalary}
+					>Order By Salary
+					</Button>
+				</Toolbar>
 			)}
 			{!loading && employees.length > 0 && (
 				<TableContainer component={Paper}>
@@ -56,8 +73,9 @@ export const AllEmployees = () => {
 								<TableCell>#</TableCell>
 								<TableCell align="right">First Name</TableCell>
 								<TableCell align="right">Last Name</TableCell>
-								{/* <TableCell align="right">Teacher Name</TableCell>
-								<TableCell align="center">Operations</TableCell> */}
+								<TableCell align="right">Employment Start Date</TableCell>
+								<TableCell align="right">Salary</TableCell>
+								<TableCell align="right">Status</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -72,7 +90,9 @@ export const AllEmployees = () => {
 										</Link>
 									</TableCell>
 									<TableCell align="right">{employee.last_name}</TableCell>
-									{/* <TableCell align="right">{course.teacher?.name}</TableCell> */}
+									<TableCell align="right">{employee.employment_start_date.toString()}</TableCell>
+									<TableCell align="right">{employee.salary}</TableCell>
+									<TableCell align="right">{employee.status}</TableCell>
 									<TableCell align="right">
 										<IconButton
 											component={Link}

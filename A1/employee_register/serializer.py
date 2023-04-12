@@ -16,20 +16,39 @@ class DepartmentSerializerList(ModelSerializer):
         fields = ['id', 'name', 'description', 'number_of_positions', 'location', 'lead_id']
 
 
+class ProjectSerializerList(ModelSerializer):
+    def validate(self, data):
+        if data['percent_complete'] < 0 or data['percent_complete'] > 100:
+            raise ValidationError("The percent must be between 0 and 100")
+        return data
+
+    class Meta:
+        model = Project
+        fields = ['id', 'name', 'description', 'language', 'start_date', 'percent_complete']
+
+
+class DepartmentSerializerWithoutEmployee(ModelSerializer):
+    class Meta:
+        model = Department
+        fields = ['id', 'name', 'description', 'number_of_positions', 'location', 'lead_id']
+
+
 class EmployeeSerializer(ModelSerializer):
     sum_hours_worked = IntegerField(read_only=True)
     sum_project_complete = IntegerField(read_only=True)
-    department = DepartmentSerializerList
+    department = DepartmentSerializerWithoutEmployee(read_only=True)
+    projects = ProjectSerializerList(many=True, read_only=True)
 
     class Meta:
         model = Employee
-        fields = ['id', 'first_name', 'last_name', 'department', 'sum_hours_worked', 'sum_project_complete']
-
+        # fields = ['id', 'first_name', 'last_name', 'employment_start_date',  'salary', 'department', 'sum_hours_worked', 'sum_project_complete']
+        fields = "__all__"
 
 class EmployeeSimpleSerializer(ModelSerializer):
     class Meta:
         model = Employee
-        fields = ('id', 'first_name', 'last_name', 'department')
+        # fields = ('id', 'first_name', 'last_name', 'employment_start_date',  'salary', 'department')
+        fields = "__all__"
 
 
 class DepartmentEmployeeSerializer(ModelSerializer):
@@ -62,7 +81,8 @@ class DepartmentEmployeeSerializer(ModelSerializer):
 class EmployeeSerializerList(ModelSerializer):
     class Meta:
         model = Employee
-        fields = ['id', 'first_name', 'last_name', 'department']
+        fields = ['id', 'first_name', 'last_name', 'employment_start_date',  'salary', 'status', 'department']
+        # fields = "__all__"
 
 
 class DepartmentSerializer(ModelSerializer):
@@ -115,17 +135,6 @@ class ProjectSerializer(ModelSerializer):
         fields = ['id', 'name', 'description', 'language', 'start_date', 'percent_complete', 'employees']
 
 
-class ProjectSerializerList(ModelSerializer):
-    def validate(self, data):
-        if data['percent_complete'] < 0 or data['percent_complete'] > 100:
-            raise ValidationError("The percent must be between 0 and 100")
-        return data
-
-    class Meta:
-        model = Project
-        fields = ['id', 'name', 'description', 'language', 'start_date', 'percent_complete']
-
-
 class EmployeeProjectSerializerList(ModelSerializer):
     class Meta:
         model = EmployeeProject
@@ -139,3 +148,4 @@ class EmployeeProjectSerializer(ModelSerializer):
     class Meta:
         model = EmployeeProject
         fields = ['id', 'employee', 'project', 'role', 'hours_worked']
+

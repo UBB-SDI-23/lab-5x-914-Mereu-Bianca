@@ -90,7 +90,7 @@ export const AllEmployees = () => {
 										</Link>
 									</TableCell>
 									<TableCell align="right">{employee.last_name}</TableCell>
-									{/* <TableCell align="right">{employee.employment_start_date}</TableCell> */}
+									<TableCell align="right">{employee.employment_start_date.toDateString()}</TableCell>
 									<TableCell align="right">{employee.salary}</TableCell>
 									<TableCell align="right">{employee.status}</TableCell>
 									<TableCell align="right">

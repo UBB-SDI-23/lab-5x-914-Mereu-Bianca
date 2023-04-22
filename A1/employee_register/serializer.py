@@ -1,5 +1,5 @@
 from datetime import datetime as dt
-
+from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, SerializerMethodField, \
     HyperlinkedModelSerializer, PrimaryKeyRelatedField, IntegerField, ValidationError
 from .models import *
@@ -148,4 +148,55 @@ class EmployeeProjectSerializer(ModelSerializer):
     class Meta:
         model = EmployeeProject
         fields = ['id', 'employee', 'project', 'role', 'hours_worked']
+
+class DynamicFieldsModelSerializer(serializers.ModelSerializer):
+    """
+    A ModelSerializer that takes an additional `fields` argument that
+    controls which fields should be displayed.
+    """
+
+    def __init__(self, *args, **kwargs):
+        kwargs.pop('fields', None)
+        include_fields = kwargs.pop('include_fields', None)
+        exclude_fields = kwargs.pop('exclude_fields', None)
+
+        # Instantiate the superclass normally
+        super().__init__(*args, **kwargs)
+
+        if include_fields is not None:
+            for field in include_fields:
+                self.fields.append(field)
+        if exclude_fields is not None:
+            for field in exclude_fields:
+                split = field.split('__')
+                to_access = self.fields
+                for i in range(len(split)-1):
+                    to_access = to_access.get(split[i])
+                if isinstance(to_access, serializers.ListSerializer):
+                    to_access = to_access.child
+                to_access.fields.pop(split[-1])
+
+
+class EmployeeSerializer2(DynamicFieldsModelSerializer):
+    department_id = serializers.IntegerField(write_only=True)
+    first_name = serializers.CharField(max_length=255)
+    last_name = serializers.CharField(max_length=255)
+    employment_start_date = serializers.DateTimeField()
+    salary = serializers.IntegerField()
+    status = serializers.CharField(max_length=255)
+    department = DepartmentSerializer(read_only=True)
+    projects = ProjectSerializer(many=True, read_only=True)
+    sum_hours_worked = serializers.IntegerField(read_only=True)
+    sum_project_complete = serializers.IntegerField(read_only=True)
+
+    def validate_department_id(self, value):
+        filter = Department.objects.filter(id=value)
+        if not filter.exists():
+            raise serializers.ValidationError("Department does not exist")
+        return value
+
+    class Meta:
+        model = Employee
+        fields = ['id', 'first_name', 'last_name', 'employment_start_date',  'salary', 'status',
+                 'department_id', 'department', 'sum_hours_worked', 'sum_project_complete', 'projects']
 

@@ -41,8 +41,9 @@ export const EmployeeDetails = () => {
 					<p>Employee Last Name: {employee?.last_name}</p>
 					<p>Employment Start Date: {employee?.employment_start_date.toString()}</p>
 					<p>Employee Salary: {employee?.salary}</p>
-					<p>Employee Salary: {employee?.status}</p>
+					<p>Employee Status: {employee?.status}</p>
 					<p>Department: {employee?.department?.name}</p>
+					{/* <p>Department: {employee?.department_id}</p> */}
 					<p>Projects:</p>
 					<ul>
 						{employee?.projects?.map((project) => (

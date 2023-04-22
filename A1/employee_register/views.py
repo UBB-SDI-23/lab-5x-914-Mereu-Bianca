@@ -44,12 +44,13 @@ class DepartmentFilterAPI(generics.ListAPIView):
 
 class EmployeeList(generics.ListCreateAPIView):
     queryset = Employee.objects.all()
-    serializer_class = EmployeeSerializerList
+    # serializer_class = EmployeeSerializerList
+    serializer_class = EmployeeSerializer2
 
 
 class EmployeeDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Employee.objects.all()
-    serializer_class = EmployeeSerializer
+    serializer_class = EmployeeSerializer2
 
 
 class DepartmentList(generics.ListCreateAPIView):
@@ -178,14 +179,13 @@ class EmployeesByAvgPercentComplete(generics.ListCreateAPIView):
             'sum_project_complete')
         return queryset
 
+
 class DepartmentsForAutocomplete(APIView):
+    # queryset = Department.objects.all()
     serializer_class = DepartmentSerializerWithoutEmployee
 
     def get(self, request, *args, **kwargs):
         query = request.GET.get('query')
-        # TODO: leverage full text search (using a raw query if needed)
-        # for example in postgres:
-        # SELECT * FROM teacher WHERE to_tsvector(name) @@ to_tsquery(query)
         departments = Department.objects.filter(name__icontains=query).order_by('name')[:20]
         serializer = DepartmentSerializerWithoutEmployee(departments, many=True)
         return Response(serializer.data)

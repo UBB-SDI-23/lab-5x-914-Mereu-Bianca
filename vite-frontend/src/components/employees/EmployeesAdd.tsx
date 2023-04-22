@@ -1,4 +1,4 @@
-import { Autocomplete, Button, Card, CardActions, CardContent, IconButton, TextField, Toolbar, debounce } from "@mui/material";
+import { Autocomplete, Button, Card, CardActions, CardContent, IconButton, TextField, Toolbar } from "@mui/material";
 import { Container } from "@mui/system";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -9,6 +9,8 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import axios from "axios";
 import { Department } from "../../models/Department";
+import { debounce } from "lodash";
+
 
 export const EmployeeAdd = () => {
 	const navigate = useNavigate();
@@ -19,27 +21,35 @@ export const EmployeeAdd = () => {
 		employment_start_date: new Date("2023-04-06T12:00:00Z"),
 		salary: 0,
 		status: "",
+		department_id: 5,
 	});
  
-	// const [departments, setDepartments] = useState<Department[]>([]);
+	const [departments, setDepartments] = useState<Department[]>([]);
 
-	// const fetchSuggestions = async (query: string) => {
-	// 	try {
-	// 		const response = await axios.get<Department[]>(
-	// 			`${BACKEND_API_URL}/departments/autocomplete?query=${query}`
-	// 		);
-	// 		const data = await response.data;
-	// 		setDepartments(data);
-	// 	} catch (error) {
-	// 		console.error("Error fetching suggestions:", error);
-	// 	}
-	// };
+	const fetchSuggestions = async (query: string) => {
+		try {
+			const response = await axios.get<Department[]>(
+				`${BACKEND_API_URL}/departments/autocomplete?query=${query}`
+			);
+			const data = await response.data;
+			setDepartments(data);
+		} catch (error) {
+			console.error("Error fetching suggestions:", error);
+		}
+	};
 
-	// const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 500), []);
+	const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 500), []);
+
+	useEffect(() => {
+		return () => {
+			debouncedFetchSuggestions.cancel();
+		};
+	}, [debouncedFetchSuggestions]);
 
 	const addEmployee = async (event: { preventDefault: () => void }) => {
 		event.preventDefault();
 		try {
+			console.log(employee);
 			await axios.post(`${BACKEND_API_URL}/employees/`, employee);
 			navigate("/employees");
 		} catch (error) {
@@ -47,13 +57,13 @@ export const EmployeeAdd = () => {
 		}
 	};
 
-	// const handleInputChange = (event: any, value: any, reason: any) => {
-	// 	console.log("input", value, reason);
+	const handleInputChange = (event: any, value: any, reason: any) => {
+		console.log("input", value, reason);
 
-	// 	if (reason === "input") {
-	// 		debouncedFetchSuggestions(value);
-	// 	}
-	// };
+		if (reason === "input") {
+			debouncedFetchSuggestions(value);
+		}
+	};
 
 
 	return (
@@ -111,7 +121,7 @@ export const EmployeeAdd = () => {
 							onChange={(event) => setEmployee({ ...employee, status: event.target.value })}
 						/>
 
-						{/* <Autocomplete
+						<Autocomplete
 							id="department_id"
 							options={departments}
 							
@@ -122,10 +132,10 @@ export const EmployeeAdd = () => {
 							onChange={(event, value) => {
 								if (value) {
 									console.log(value);
-									setEmployee({ ...employee, department: value });
+									setEmployee({ ...employee, department_id: value.id });
 								}
 							}}
-						/> */}
+						/>
 
 						<Button type="submit">Add Employee</Button>
 					</form>

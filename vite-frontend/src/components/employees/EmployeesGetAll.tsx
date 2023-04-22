@@ -76,6 +76,7 @@ export const AllEmployees = () => {
 								<TableCell align="right">Employment Start Date</TableCell>
 								<TableCell align="right">Salary</TableCell>
 								<TableCell align="right">Status</TableCell>
+								<TableCell align="right">Department</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -93,6 +94,7 @@ export const AllEmployees = () => {
 									<TableCell align="right">{employee.employment_start_date.toString()}</TableCell>
 									<TableCell align="right">{employee.salary}</TableCell>
 									<TableCell align="right">{employee.status}</TableCell>
+									<TableCell align="right">{employee.department?.name}</TableCell>
 									<TableCell align="right">
 										<IconButton
 											component={Link}

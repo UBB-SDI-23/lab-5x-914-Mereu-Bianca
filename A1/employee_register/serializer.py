@@ -13,7 +13,7 @@ class DepartmentSerializerList(ModelSerializer):
 
     class Meta:
         model = Department
-        fields = ['id', 'name', 'description', 'number_of_positions', 'location', 'lead_id']
+        fields = ['id', 'name', 'description', 'number_of_positions', 'location', 'budget']
 
 
 class ProjectSerializerList(ModelSerializer):
@@ -30,7 +30,7 @@ class ProjectSerializerList(ModelSerializer):
 class DepartmentSerializerWithoutEmployee(ModelSerializer):
     class Meta:
         model = Department
-        fields = ['id', 'name', 'description', 'number_of_positions', 'location', 'lead_id']
+        fields = ['id', 'name', 'description', 'number_of_positions', 'location', 'budget']
 
 
 class EmployeeSerializer(ModelSerializer):
@@ -95,7 +95,7 @@ class DepartmentSerializer(ModelSerializer):
 
     class Meta:
         model = Department
-        fields = ['id', 'name', 'description', 'number_of_positions', 'location', 'lead_id', 'employees']
+        fields = ['id', 'name', 'description', 'number_of_positions', 'location', 'budget', 'employees']
 
 
 class EmployeeDetailsSerializer(ModelSerializer):

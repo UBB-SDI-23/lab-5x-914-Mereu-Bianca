@@ -30,7 +30,7 @@ export const UpdateEmployee = () => {
         description: "",
         number_of_positions: 0,
         location: "",
-        lead_id: 1,
+        budget: 1,
     })
 
     const updateEmployee = async (event: { preventDefault: () => void }) => {

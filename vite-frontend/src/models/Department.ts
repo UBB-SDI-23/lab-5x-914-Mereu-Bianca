@@ -4,5 +4,5 @@ export interface Department {
     description: string;
     number_of_positions: number;
     location: string;
-    lead_id: number;
+    budget: number;
 }

@@ -8,7 +8,7 @@ class Department(models.Model):
     description = models.CharField(max_length=100)
     number_of_positions = models.IntegerField()
     location = models.CharField(max_length=100)
-    lead_id = models.CharField(max_length=100)
+    budget = models.IntegerField(null=True)
 
     def __str__(self):
         return self.name

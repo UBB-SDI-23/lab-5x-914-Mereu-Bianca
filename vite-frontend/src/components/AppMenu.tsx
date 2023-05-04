@@ -34,6 +34,24 @@ export const AppMenu = () => {
 						Employees
 					</Button>
 					<Button
+						variant={path.startsWith("/employeeprojects") ? "outlined" : "text"}
+						to="/employeeprojects"
+						component={Link}
+						color="inherit"
+						sx={{ mr: 5 }}
+						startIcon={<LocalLibraryIcon />}>
+						Employees Projects
+					</Button>
+					<Button
+						variant={path.startsWith("/projects") ? "outlined" : "text"}
+						to="/projects"
+						component={Link}
+						color="inherit"
+						sx={{ mr: 5 }}
+						startIcon={<LocalLibraryIcon />}>
+						Projects
+					</Button>
+					<Button
 						variant={path.startsWith("/employees-ordered-by-hours-worked") ? "outlined" : "text"}
 						to="/employees-ordered-by-hours-worked"
 						component={Link}

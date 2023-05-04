@@ -7,6 +7,7 @@ export interface Employee {
     last_name: string;
     employment_start_date: Date;
     salary: number;
+    nr_of_projects?: number;
     sum_hours_worked?: number;
     status?: string;
     department_id?: number;

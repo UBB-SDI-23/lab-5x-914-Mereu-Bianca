@@ -23,7 +23,7 @@ export const EmployeeAdd = () => {
 		status: "",
 		department_id: 5,
 	});
- 
+
 	const [departments, setDepartments] = useState<Department[]>([]);
 
 	const fetchSuggestions = async (query: string) => {
@@ -65,6 +65,32 @@ export const EmployeeAdd = () => {
 		}
 	};
 
+	const [employmentDateError, setEmploymentDateError] = useState('');
+	function handleDateChange(event: any) {
+		const input = event.target.value;
+		const regex = /^\d{4}-\d{1,2}-\d{1,2}$/;
+		if (regex.test(input)) {
+			setEmploymentDateError('');
+			setEmployee({ ...employee, employment_start_date: input });
+		}
+		else {
+			setEmploymentDateError('The date format is: YYYY-MM-DD');
+		}
+	}
+
+	const [salaryError, setSalaryError] = useState('');
+	function handleSalaryChange(event: any) {
+		const input = event.target.value;
+		const regex = /^\d{4,5}$/;
+		if (regex.test(input)) {
+			setSalaryError('');
+			setEmployee({ ...employee, salary: input });
+		}
+		else {
+			setSalaryError('Salary must be between 1000 and 100000!');
+		}
+	}
+
 
 	return (
 		<Container>
@@ -98,10 +124,13 @@ export const EmployeeAdd = () => {
 							variant="outlined"
 							fullWidth
 							sx={{ mb: 2 }}
-							onChange={(event) => setEmployee({
-								...employee,
-								employment_start_date: new Date(event.target.value)
-							})}
+							// onChange={(event) => setEmployee({
+							// 	...employee,
+							// 	employment_start_date: new Date(event.target.value)
+							// })}
+							onChange={handleDateChange}
+							error={!!employmentDateError}
+							helperText={employmentDateError}
 						/>
 						<TextField
 							id="salary"
@@ -109,9 +138,12 @@ export const EmployeeAdd = () => {
 							variant="outlined"
 							fullWidth
 							sx={{ mb: 2 }}
-							onChange={(event) => setEmployee({ ...employee, salary: parseInt(event.target.value) })}
+							// onChange={(event) => setEmployee({ ...employee, salary: parseInt(event.target.value) })}
+							onChange={handleSalaryChange}
+							error={!!salaryError}
+							helperText={salaryError}
 						/>
-						
+
 						<TextField
 							id="status"
 							label="Status"
@@ -124,7 +156,7 @@ export const EmployeeAdd = () => {
 						<Autocomplete
 							id="department_id"
 							options={departments}
-							
+
 							getOptionLabel={(option) => `${option.name}`}
 							renderInput={(params) => <TextField {...params} label="Department" variant="outlined" />}
 							filterOptions={(x) => x}

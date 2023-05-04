@@ -15,8 +15,10 @@ urlpatterns = [
     path("employees/<int:pk>/", EmployeeDetail.as_view()),
     path("departments", DepartmentList.as_view()),
     path("departments/<int:pk>/", DepartmentDetail.as_view()),
-    path("projects", ProjectList.as_view()),
+    path("projects/", ProjectList.as_view()),
     path("projects/<int:pk>/", ProjectDetail.as_view()),
+    path("employeeprojects/", EmployeeProjectsList.as_view()),
+    path("employeeprojects/<int:pk>/", EmployeeProjectsDetail.as_view()),
     path("employee-details", EmployeeDetailsList.as_view()),
     path("employee-details/<int:pk>", EmployeeDetailsDetail.as_view()),
     path("departments-filter-api/<int:pk>/", DepartmentFilterAPI.as_view(), name="departments-filter-api"),
@@ -28,6 +30,8 @@ urlpatterns = [
          name="employees-ordered-by-hours-worked"),
     path("employees-ordered-by-avg-percent-complete/", EmployeesByAvgPercentComplete.as_view()),
     path("departments/autocomplete/", DepartmentsForAutocomplete.as_view()),
+    path("employees/autocomplete/", EmployeesForAutocomplete.as_view()),
+    path("projects/autocomplete/", ProjectsForAutocomplete.as_view()),
     path('', include(router.urls)),
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

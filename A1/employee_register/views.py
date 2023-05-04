@@ -7,20 +7,15 @@ from .serializer import *
 from rest_framework import (viewsets, filters, status, )
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from django.db.models import Avg, Max, Sum, Q
+from django.db.models import Avg, Max, Sum, Q, Count
+from rest_framework.pagination import PageNumberPagination
 
 
-# Create your views here.
-
-
-# class EmployeeViewSet(ModelViewSet):
-#     serializer_class = EmployeeSerializer
-#     queryset = Employee.objects.all()
-#
-#
-# class DepartmentViewSet(ModelViewSet):
-#     serializer_class = DepartmentSerializer
-#     queryset = Department.objects.all()
+class MyPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 10
+    page_query_param = 'p'
 
 
 class DepartmentFilter(ModelViewSet):
@@ -43,9 +38,9 @@ class DepartmentFilterAPI(generics.ListAPIView):
 
 
 class EmployeeList(generics.ListCreateAPIView):
-    queryset = Employee.objects.all()
-    # serializer_class = EmployeeSerializerList
     serializer_class = EmployeeSerializer2
+    queryset = Employee.objects.annotate(nr_of_projects=Count('project')).order_by('id')
+    pagination_class = MyPagination
 
 
 class EmployeeDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -64,8 +59,21 @@ class DepartmentDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ProjectList(generics.ListCreateAPIView):
-    queryset = Project.objects.all()
+
     serializer_class = ProjectSerializerList
+    queryset = Project.objects.annotate(nr_of_employees=Count('employee')).order_by('id')
+    pagination_class = MyPagination
+
+
+class EmployeeProjectsList(generics.ListCreateAPIView):
+    serializer_class = EmployeeProjectSerializer2
+    queryset = EmployeeProject.objects.all()
+    pagination_class = MyPagination
+
+
+class EmployeeProjectsDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = EmployeeProject.objects.all()
+    serializer_class = EmployeeProjectSerializer2
 
 
 class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -143,25 +151,6 @@ class ProjectForEmployeeDetail(generics.ListCreateAPIView):
         return EmployeeProject.objects.filter(employee_id=pk, project_id=second_pk)
 
 
-# class MultipleFieldLookupMixin:
-#     def get_object(self):
-#         queryset = self.get_queryset()             # Get the base queryset
-#         queryset = self.filter_queryset(queryset)  # Apply any filter backends
-#         filter = {}
-#         for field in self.lookup_fields:
-#             if self.kwargs.get(field): # Ignore empty fields.
-#                 filter[field] = self.kwargs[field]
-#         obj = get_object_or_404(queryset, **filter)  # Lookup the object
-#         self.check_object_permissions(self.request, obj)
-#         return obj
-#
-#
-# class ProjectForEmployeeDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
-#     serializer_class = EmployeeProjectSerializer
-#     queryset = EmployeeProject.objects.all()
-#     lookup_field = ['employee', 'project']
-
-
 class EmployeesByMaxHoursWorked(generics.ListCreateAPIView):
     serializer_class = EmployeeSerializer
 
@@ -188,4 +177,24 @@ class DepartmentsForAutocomplete(APIView):
         query = request.GET.get('query')
         departments = Department.objects.filter(name__icontains=query).order_by('name')[:20]
         serializer = DepartmentSerializerWithoutEmployee(departments, many=True)
+        return Response(serializer.data)
+
+class EmployeesForAutocomplete(APIView):
+    # queryset = Department.objects.all()
+    serializer_class = EmployeeSimpleSerializer
+
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get('query')
+        employees = Employee.objects.filter(first_name__icontains=query).order_by('first_name')[:20]
+        serializer = EmployeeSimpleSerializer(employees, many=True)
+        return Response(serializer.data)
+
+class ProjectsForAutocomplete(APIView):
+    # queryset = Department.objects.all()
+    serializer_class = ProjectSimpleSerializer
+
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get('query')
+        departments = Project.objects.filter(name__icontains=query).order_by('name')[:20]
+        serializer = ProjectSimpleSerializer(departments, many=True)
         return Response(serializer.data)

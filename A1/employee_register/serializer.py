@@ -17,6 +17,7 @@ class DepartmentSerializerList(ModelSerializer):
 
 
 class ProjectSerializerList(ModelSerializer):
+    nr_of_employees = serializers.IntegerField(read_only=True)
     def validate(self, data):
         if data['percent_complete'] < 0 or data['percent_complete'] > 100:
             raise ValidationError("The percent must be between 0 and 100")
@@ -24,13 +25,14 @@ class ProjectSerializerList(ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['id', 'name', 'description', 'language', 'start_date', 'percent_complete']
+        fields = ['id', 'name', 'description', 'language', 'start_date', 'percent_complete', 'nr_of_employees']
 
 
 class DepartmentSerializerWithoutEmployee(ModelSerializer):
     class Meta:
         model = Department
         fields = ['id', 'name', 'description', 'number_of_positions', 'location', 'budget']
+
 
 
 class EmployeeSerializer(ModelSerializer):
@@ -188,6 +190,7 @@ class EmployeeSerializer2(DynamicFieldsModelSerializer):
     projects = ProjectSerializer(many=True, read_only=True)
     sum_hours_worked = serializers.IntegerField(read_only=True)
     sum_project_complete = serializers.IntegerField(read_only=True)
+    nr_of_projects = serializers.IntegerField(read_only=True)
 
     def validate_department_id(self, value):
         filter = Department.objects.filter(id=value)
@@ -198,5 +201,32 @@ class EmployeeSerializer2(DynamicFieldsModelSerializer):
     class Meta:
         model = Employee
         fields = ['id', 'first_name', 'last_name', 'employment_start_date',  'salary', 'status',
-                 'department_id', 'department', 'sum_hours_worked', 'sum_project_complete', 'projects']
+                 'department_id', 'department', 'sum_hours_worked', 'sum_project_complete', 'projects', 'nr_of_projects']
 
+class   EmployeeProjectSerializer2(DynamicFieldsModelSerializer):
+    employee_id = serializers.IntegerField(write_only=True)
+    project_id = serializers.IntegerField(write_only=True)
+    employee = EmployeeSerializer(read_only=True)
+    project = ProjectSerializer(read_only=True)
+
+    def validate_employee_id(self, value):
+        filter = Employee.objects.filter(id=value)
+        if not filter.exists():
+            raise serializers.ValidationError("Employee does not exist")
+        return value
+
+    def validate_project_id(self, value):
+        filter = Project.objects.filter(id=value)
+        if not filter.exists():
+            raise serializers.ValidationError("Project does not exist")
+        return value
+
+    class Meta:
+        model = EmployeeProject
+        fields = ['id', 'role', 'hours_worked', 'employee', 'project', 'employee_id', 'project_id']
+
+
+class ProjectSimpleSerializer(ModelSerializer):
+    class Meta:
+        model = Project
+        fields = "__all__"

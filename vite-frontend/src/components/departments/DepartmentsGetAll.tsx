@@ -17,25 +17,27 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BACKEND_API_URL } from "../../constants";
-import { Project } from "../../models/Project";
+import { Department } from "../../models/Department";
 import ReadMoreIcon from "@mui/icons-material/ReadMore";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
 
-export const AllProjects = () => {
+export const AllDepartments = () => {
 	const [loading, setLoading] = useState(false);
-	const [projects, setProjects] = useState<Project[]>([]);
+	const [departments, setDepartments] = useState<Department[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const totalPages = Math.ceil(1000000 / 100);
 
 	useEffect(() => {
 		setLoading(true);
-		fetch(`${BACKEND_API_URL}/projects/?p=${currentPage}`)
+		fetch(`${BACKEND_API_URL}/departments/?p=${currentPage}`)
 			.then((response) => response.json())
 			.then((data) => {
+
+                console.log("OKK")
 				console.log(data.results);
-				setProjects(data.results);
+				setDepartments(data.results);
 				setLoading(false);
 			});
 	}, []);
@@ -44,10 +46,10 @@ export const AllProjects = () => {
 		setCurrentPage(newPage);
 
 		setLoading(true);
-		fetch(`${BACKEND_API_URL}/projects/?p=${newPage}`)
+		fetch(`${BACKEND_API_URL}/departments/?p=${newPage}`)
 			.then((response) => response.json())
 			.then((data) => {
-				setProjects(data.results);
+				setDepartments(data.results);
 				setLoading(false);
 			});
 	};
@@ -61,33 +63,31 @@ export const AllProjects = () => {
 		pageNumbers.push(i);
 	}
 
-
 	return (
 		<Container>
-			<h1>All projects</h1>
+			<h1>All Departments</h1>
 			<label style={{ color: "gray" }}>Current Page: {currentPage}</label>
 
 			{loading && <CircularProgress />}
-			{!loading && projects.length === 0 && <p>No projects found</p>}
+			{!loading && departments.length === 0 && <p>No Departments found</p>}
 			{!loading && (
 				<Toolbar>
 					<div style={{ width: "1200px" }}>
 						{currentPage > 1 && (
-							<button style={{ margin: "3px" }} onClick={() => handlePageChange(currentPage - 1)}>
+							<button onClick={() => handlePageChange(currentPage - 1)}>
 								Previous
 							</button>
 						)}
 						{pageNumbers[0] > 1 && (
 							<>
-								<button style={{ margin: "3px" }} onClick={() => handlePageChange(1)}>1</button>
-								{pageNumbers[0] > 2 && <span style={{ margin: "3px" }} >...</span>}
+								<button onClick={() => handlePageChange(1)}>1</button>
+								{pageNumbers[0] > 2 && <span >...</span>}
 							</>
 						)}
 						{pageNumbers.map((pageNumber) => (
 							<button
 								style={{
 									margin: "3px",
-									// backgroundColor: currentPage === pageNumber ? "white" : "",
 									backgroundColor: "white",
 									color: currentPage === pageNumber ? "blue" : "black",
 									pointerEvents: currentPage === pageNumber ? "none" : "auto"
@@ -101,71 +101,69 @@ export const AllProjects = () => {
 						{pageNumbers[pageNumbers.length - 1] <= totalPages - 1 && (
 							<>
 								{pageNumbers[pageNumbers.length - 1] <= totalPages - 2 && (
-									<span style={{ margin: "3px" }}>...</span>
+									<span>...</span>
 								)}
-								<button style={{ margin: "3px" }} onClick={() => handlePageChange(totalPages)}>
+								<button onClick={() => handlePageChange(totalPages)}>
 									{totalPages}
 								</button>
 							</>
 						)}
 						{currentPage < totalPages && (
-							<button style={{ margin: "3px" }} onClick={() => handlePageChange(currentPage + 1)}>
+							<button onClick={() => handlePageChange(currentPage + 1)}>
 								Next
 							</button>
 						)}
 					</div>
-					<IconButton component={Link} sx={{ mr: 3 }} to={`/projects/add`}>
-						<Tooltip title="Add a new project" arrow>
+					<IconButton component={Link} sx={{ mr: 3 }} to={`/departments/add`}>
+						<Tooltip title="Add a new Department" arrow>
 							<AddIcon color="primary" />
 						</Tooltip>
 					</IconButton>
 				</Toolbar>
 			)}
-			{!loading && projects.length > 0 && (
+			{!loading && departments.length > 0 && (
 				<TableContainer component={Paper}>
 					<Table sx={{ minWidth: 650 }} aria-label="simple table">
 						<TableHead>
 							<TableRow>
 								<TableCell>#</TableCell>
 								<TableCell align="right">Name</TableCell>
-								<TableCell align="right">Description</TableCell>
-								<TableCell align="right">Language</TableCell>
-								<TableCell align="right">Percent Complete</TableCell>
-								<TableCell align="right">Start Date</TableCell>
-                                <TableCell align="right">Number of Employees</TableCell>
+								<TableCell align="right">Department</TableCell>
+								<TableCell align="right">Location</TableCell>
+								<TableCell align="right">Budget</TableCell>
+								<TableCell align="right">Number of Positons</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{projects.map((project, index) => (
-								<TableRow key={project.id}>
+							{departments.map((departments, index) => (
+								<TableRow key={departments.id}>
 									<TableCell component="th" scope="row">
 										{index + 1}
 									</TableCell>
 									<TableCell component="th" scope="row">
-										<Link to={`/projects/${project.id}/details`} title="View project details">
-											{project.name}
+										<Link to={`/departments/${departments.id}/details`} title="View Department details">
+											{departments.name}
 										</Link>
 									</TableCell>
-									<TableCell align="right">{project.description}</TableCell>
-									<TableCell align="right">{project.language}</TableCell>
-									<TableCell align="right">{project.percent_complete}</TableCell>
-									<TableCell align="right">{project.start_date.toString()}</TableCell>
-                                    <TableCell align="right">{project.nr_of_employees}</TableCell>
+									<TableCell align="right">{departments.description}</TableCell>
+									<TableCell align="right">{departments.location}</TableCell>
+									<TableCell align="right">{departments.budget}</TableCell>
+									<TableCell align="right">{departments.number_of_positions}</TableCell>
 									<TableCell align="right">
 										<IconButton
 											component={Link}
 											sx={{ mr: 3 }}
-											to={`/projects/${project.id}/details`}>
-											<Tooltip title="View project details" arrow>
+											to={`/departments/${departments.id}/details`}>
+											<Tooltip title="View Department details" arrow>
 												<ReadMoreIcon color="primary" />
 											</Tooltip>
 										</IconButton>
 
-										<IconButton component={Link} sx={{ mr: 3 }} to={`/projects/${project.id}/edit`}>
+										<IconButton component={Link} sx={{ mr: 3 }} to={`/departments/${departments.id}/edit`}>
 											<EditIcon />
 										</IconButton>
 
-										<IconButton component={Link} sx={{ mr: 3 }} to={`/projects/${project.id}/delete`}>
+										<IconButton component={Link} sx={{ mr: 3 }} to={`/departments/${departments.id}/delete`}>
 											<DeleteForeverIcon sx={{ color: "red" }} />
 										</IconButton>
 									</TableCell>

@@ -22,14 +22,12 @@ import ReadMoreIcon from "@mui/icons-material/ReadMore";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 export const AllEmployeeProjects = () => {
 	const [loading, setLoading] = useState(false);
 	const [employeeProjects, setEmployeeProjects] = useState<EmployeeProject[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const totalPages = 2; //Math.ceil(1000000 / 100);
+	const totalPages = Math.ceil(10000000 / 100);
 
 	useEffect(() => {
 		setLoading(true);
@@ -41,32 +39,6 @@ export const AllEmployeeProjects = () => {
 				setLoading(false);
 			});
 	}, []);
-
-	const handleNextPage = () => {
-		if (currentPage < totalPages) {
-			setCurrentPage(currentPage + 1);
-			setLoading(true);
-			fetch(`${BACKEND_API_URL}/employeeprojects/?p=${currentPage + 1}`)
-				.then((response) => response.json())
-				.then((data) => {
-					setEmployeeProjects(data.results);
-					setLoading(false);
-				});
-		}
-	};
-
-	const handlePrevPage = () => {
-		if (currentPage > 1) {
-			setCurrentPage(currentPage - 1);
-			setLoading(true);
-			fetch(`${BACKEND_API_URL}/employeeprojects/?p=${currentPage - 1}`)
-				.then((response) => response.json())
-				.then((data) => {
-					setEmployeeProjects(data.results);
-					setLoading(false);
-				});
-		}
-	};
 
 	const handlePageChange = (newPage: number) => {
 		setCurrentPage(newPage);
@@ -88,12 +60,6 @@ export const AllEmployeeProjects = () => {
 	) {
 		pageNumbers.push(i);
 	}
-
-	const [open, setOpen] = React.useState(false);
-	const numbers = Array.from({ length: 100 }, (_, index) => index + 1);
-	const handleOpen = () => {
-		setOpen(!open);
-	};
 
 	return (
 		<Container>

@@ -34,7 +34,6 @@ class DepartmentSerializerWithoutEmployee(ModelSerializer):
         fields = ['id', 'name', 'description', 'number_of_positions', 'location', 'budget']
 
 
-
 class EmployeeSerializer(ModelSerializer):
     sum_hours_worked = IntegerField(read_only=True)
     sum_project_complete = IntegerField(read_only=True)
@@ -45,6 +44,7 @@ class EmployeeSerializer(ModelSerializer):
         model = Employee
         # fields = ['id', 'first_name', 'last_name', 'employment_start_date',  'salary', 'department', 'sum_hours_worked', 'sum_project_complete']
         fields = "__all__"
+
 
 class EmployeeSimpleSerializer(ModelSerializer):
     class Meta:
@@ -151,6 +151,7 @@ class EmployeeProjectSerializer(ModelSerializer):
         model = EmployeeProject
         fields = ['id', 'employee', 'project', 'role', 'hours_worked']
 
+
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
     """
     A ModelSerializer that takes an additional `fields` argument that
@@ -203,7 +204,8 @@ class EmployeeSerializer2(DynamicFieldsModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'employment_start_date',  'salary', 'status',
                  'department_id', 'department', 'sum_hours_worked', 'sum_project_complete', 'projects', 'nr_of_projects']
 
-class   EmployeeProjectSerializer2(DynamicFieldsModelSerializer):
+
+class EmployeeProjectSerializer2(DynamicFieldsModelSerializer):
     employee_id = serializers.IntegerField(write_only=True)
     project_id = serializers.IntegerField(write_only=True)
     employee = EmployeeSerializer(read_only=True)

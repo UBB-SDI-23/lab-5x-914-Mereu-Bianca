@@ -49,8 +49,9 @@ class EmployeeDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class DepartmentList(generics.ListCreateAPIView):
-    queryset = Department.objects.all()
     serializer_class = DepartmentSerializerList
+    queryset = Department.objects.all()
+    pagination_class = MyPagination
 
 
 class DepartmentDetail(generics.RetrieveUpdateDestroyAPIView):

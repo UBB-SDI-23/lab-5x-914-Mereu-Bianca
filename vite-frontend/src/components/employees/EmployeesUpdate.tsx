@@ -51,32 +51,58 @@ export const UpdateEmployee = () => {
 
 
     const fetchSuggestions = async (query: string) => {
-		try {
-			const response = await axios.get<Department[]>(
-				`${BACKEND_API_URL}/departments/autocomplete?query=${query}`
-			);
-			const data = await response.data;
-			setDepartments(data);
-		} catch (error) {
-			console.error("Error fetching suggestions:", error);
-		}
-	};
+        try {
+            const response = await axios.get<Department[]>(
+                `${BACKEND_API_URL}/departments/autocomplete?query=${query}`
+            );
+            const data = await response.data;
+            setDepartments(data);
+        } catch (error) {
+            console.error("Error fetching suggestions:", error);
+        }
+    };
 
-	const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 500), []);
+    const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 500), []);
 
-	useEffect(() => {
-		return () => {
-			debouncedFetchSuggestions.cancel();
-		};
-	}, [debouncedFetchSuggestions]);
+    useEffect(() => {
+        return () => {
+            debouncedFetchSuggestions.cancel();
+        };
+    }, [debouncedFetchSuggestions]);
 
     const handleInputChange = (event: any, value: any, reason: any) => {
-		console.log("input", value, reason);
+        console.log("input", value, reason);
 
-		if (reason === "input") {
-			debouncedFetchSuggestions(value);
-		}
-	};
+        if (reason === "input") {
+            debouncedFetchSuggestions(value);
+        }
+    };
+
+    const [employmentDateError, setEmploymentDateError] = useState('');
+    function handleDateChange(event: any) {
+        const input = event.target.value;
+        const regex = /^\d{4}-\d{1,2}-\d{1,2}$/;
+        if (regex.test(input)) {
+            setEmploymentDateError('');
+            setEmployee({ ...employee, employment_start_date: input });
+        }
+        else {
+            setEmploymentDateError('The date format is: YYYY-MM-DD');
+        }
+    }
+
+    const [salaryError, setSalaryError] = useState('');
+    function handleSalaryChange(event: any) {
+        const input = event.target.value;
+        const regex = /^\d{4,5}$/;
+        if (regex.test(input)) {
+            setSalaryError('');
+            setEmployee({ ...employee, salary: input });
+        }
+        else {
+            setSalaryError('Salary must be between 1000 and 100000!');
+        }
+    }
 
     return (
         <Container>
@@ -119,7 +145,10 @@ export const UpdateEmployee = () => {
                             <TextField
                                 id="employment_start_date"
                                 variant="outlined"
-                                onChange={(event) => setEmployee({ ...employee, employment_start_date: new Date(event.target.value) })}
+                                // onChange={(event) => setEmployee({ ...employee, employment_start_date: new Date(event.target.value) })}
+                                onChange={handleDateChange}
+                                error={!!employmentDateError}
+                                helperText={employmentDateError}
                             />
                         </Container>
 
@@ -130,7 +159,10 @@ export const UpdateEmployee = () => {
                             <TextField
                                 id="salary"
                                 variant="outlined"
-                                onChange={(event) => setEmployee({ ...employee, salary: parseInt(event.target.value) })}
+                                // onChange={(event) => setEmployee({ ...employee, salary: parseInt(event.target.value) })}
+                                onChange={handleSalaryChange}
+                                error={!!salaryError}
+                                helperText={salaryError}
                             />
                         </Container>
 
@@ -154,10 +186,10 @@ export const UpdateEmployee = () => {
                                 id="department_id"
                                 options={departments}
                                 getOptionLabel={(option) => `${option.name}`}
-							    renderInput={(params) => <TextField {...params} label="Department" variant="outlined" />}
+                                renderInput={(params) => <TextField {...params} label="Department" variant="outlined" />}
                                 value={department.current}
-							    filterOptions={(x) => x}
-							    onInputChange={handleInputChange}
+                                filterOptions={(x) => x}
+                                onInputChange={handleInputChange}
                                 onChange={(event, value) => {
                                     if (value) {
                                         console.log(value);

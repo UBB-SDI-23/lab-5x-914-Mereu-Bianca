@@ -52,13 +52,31 @@ export const AppMenu = () => {
 						Projects
 					</Button>
 					<Button
+						variant={path.startsWith("/departments") ? "outlined" : "text"}
+						to="/departments"
+						component={Link}
+						color="inherit"
+						sx={{ mr: 5 }}
+						startIcon={<LocalLibraryIcon />}>
+						Departments
+					</Button>
+					<Button
 						variant={path.startsWith("/employees-ordered-by-hours-worked") ? "outlined" : "text"}
 						to="/employees-ordered-by-hours-worked"
 						component={Link}
 						color="inherit"
 						sx={{ mr: 5 }}
 						startIcon={<LocalLibraryIcon />}>
-						Statistics
+						Statistics Hours Worked
+					</Button>
+					<Button
+						variant={path.startsWith("/employees-ordered-by-avg-percent-complete") ? "outlined" : "text"}
+						to="/employees-ordered-by-avg-percent-complete"
+						component={Link}
+						color="inherit"
+						sx={{ mr: 5 }}
+						startIcon={<LocalLibraryIcon />}>
+						Statistics Percent Complete
 					</Button>
 				</Toolbar>
 			</AppBar>

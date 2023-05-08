@@ -22,14 +22,12 @@ import ReadMoreIcon from "@mui/icons-material/ReadMore";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 export const AllEmployees = () => {
 	const [loading, setLoading] = useState(false);
 	const [employees, setEmployees] = useState<Employee[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const totalPages = 2; //Math.ceil(1000000 / 100);
+	const totalPages = Math.ceil(1000000 / 100);
 
 	useEffect(() => {
 		setLoading(true);
@@ -51,32 +49,6 @@ export const AllEmployees = () => {
 		setEmployees(sorted);
 	}
 
-	const handleNextPage = () => {
-		if (currentPage < totalPages) {
-			setCurrentPage(currentPage + 1);
-			setLoading(true);
-			fetch(`${BACKEND_API_URL}/employees/?p=${currentPage + 1}`)
-				.then((response) => response.json())
-				.then((data) => {
-					setEmployees(data.results);
-					setLoading(false);
-				});
-		}
-	};
-
-	const handlePrevPage = () => {
-		if (currentPage > 1) {
-			setCurrentPage(currentPage - 1);
-			setLoading(true);
-			fetch(`${BACKEND_API_URL}/employees/?p=${currentPage - 1}`)
-				.then((response) => response.json())
-				.then((data) => {
-					setEmployees(data.results);
-					setLoading(false);
-				});
-		}
-	};
-
 	const handlePageChange = (newPage: number) => {
 		setCurrentPage(newPage);
 
@@ -97,12 +69,6 @@ export const AllEmployees = () => {
 	) {
 		pageNumbers.push(i);
 	}
-
-	const [open, setOpen] = React.useState(false);
-	const numbers = Array.from({ length: 100 }, (_, index) => index + 1);
-	const handleOpen = () => {
-		setOpen(!open);
-	};
 
 	return (
 		<Container>
@@ -128,8 +94,6 @@ export const AllEmployees = () => {
 						{pageNumbers.map((pageNumber) => (
 							<button
 								style={{
-									margin: "3px",
-									// backgroundColor: currentPage === pageNumber ? "white" : "",
 									backgroundColor: "white",
 									color: currentPage === pageNumber ? "blue" : "black",
 									pointerEvents: currentPage === pageNumber ? "none" : "auto"
@@ -143,15 +107,15 @@ export const AllEmployees = () => {
 						{pageNumbers[pageNumbers.length - 1] <= totalPages - 1 && (
 							<>
 								{pageNumbers[pageNumbers.length - 1] <= totalPages - 2 && (
-									<span style={{ margin: "3px" }}>...</span>
+									<span>...</span>
 								)}
-								<button style={{ margin: "3px" }} onClick={() => handlePageChange(totalPages)}>
+								<button onClick={() => handlePageChange(totalPages)}>
 									{totalPages}
 								</button>
 							</>
 						)}
 						{currentPage < totalPages && (
-							<button style={{ margin: "3px" }} onClick={() => handlePageChange(currentPage + 1)}>
+							<button onClick={() => handlePageChange(currentPage + 1)}>
 								Next
 							</button>
 						)}
